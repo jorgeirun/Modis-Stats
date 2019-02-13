@@ -1,0 +1,22 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title>Modis Stats</title>
+	    <link rel="stylesheet" href="{% static 'css/leaflet.css' %}" data-require="leaflet@0.7.3" data-semver="0.7.3" />
+	    <link rel="stylesheet" href="{% static 'css/styles.css' %}"/>
+	</head>
+	<body>
+		<div id="map"></div>
+		<div id="data">
+			<span id="total"></span>
+		</div>
+		<div id="controls"></div>
+	</body>
+	<script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/leaflet.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/map.js' %}"></script>
+</html>
