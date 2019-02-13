@@ -7,16 +7,24 @@
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
 	    <title>Modis Stats</title>
 	    <link rel="stylesheet" href="{% static 'css/leaflet.css' %}" data-require="leaflet@0.7.3" data-semver="0.7.3" />
+	    <link rel="stylesheet" href="{% static 'css/rangeslider.css' %}"/>
+	    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
 	    <link rel="stylesheet" href="{% static 'css/styles.css' %}"/>
 	</head>
 	<body>
 		<div id="map"></div>
-		<div id="data">
+		<div id="panel">
 			<span id="total"></span>
+			<div id="controls">
+				<input type="range" min="1" max="365" step="1" value="1">
+				<input type="text" id="sliderValueField" name="sliderValueField" disabled>
+				<input type="hidden" id="sliderValueFieldJulian" name="sliderValueFieldJulian" disabled>
+				<button id="refreshButton" >Actualizar</button>
+			</div>
 		</div>
-		<div id="controls"></div>
 	</body>
 	<script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/rangeslider.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/leaflet.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/map.js' %}"></script>
 </html>

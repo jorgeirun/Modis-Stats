@@ -6,10 +6,21 @@ html, body {
   height: 100%;
 }
 
-#controls {
-    width: 100%;
+#panel {
+    width: 90%;
     height: 200px;
+    margin: 0 auto;
+    padding: 10px;
     background-color: #efefef;
+}
+
+#total {
+    padding: 10px 0px;
+}
+
+#controls {
+    padding: 10px 0px;
+    
 }
 
 #map {

@@ -1,6 +1,21 @@
+// display map first
 displayMap();
+
+// init rangeslider
+$('input[type="range"]').rangeslider();
+
+// on slider change refresh field
+$(function() {
+  	$(document).on('input', 'input[type="range"]', function(e) {
+    	$('#sliderValueField').val(dateFromDay(2017, e.currentTarget.value));
+    	$('#sliderValueFieldJulian').val(e.currentTarget.value);
+	});
+});
+
 // global map variable
 var map;
+var pointsData;
+let allCircles = new L.featureGroup();
 
 // display map on screen
 function displayMap() {
@@ -13,39 +28,30 @@ function displayMap() {
 	    	})
 	  	]
 	});
-	displayData();
+
+	let bounds = [[-25,-40], [-25,-70]];
+	map.fitBounds(bounds);
+
+	// display data with Jan, 2 as default
+	// set defualt values
+	var defaultVal = 2;
+	$('input[type="range"]').val(defaultVal).change();
+	$('#sliderValueField').val(dateFromDay(2017, defaultVal));
+	$('#sliderValueFieldJulian').val(defaultVal);
+	displayData(defaultVal);
 }
 
 // display data on map
-function displayData() {
+function displayData(datenumber, limit = 5000000) {
 
-	let url = 'http://127.0.0.1:7000/modis/getData?datenumber=1&limit=5000000';
-	let clients = new L.featureGroup();
+	let url = 'http://127.0.0.1:7000/modis/getData?datenumber='+datenumber+'&limit='+limit;
 	let circle = [];
 
 	$.getJSON(url,function (res) {
-	  	let radarIcon = L.icon({
-			iconUrl:      'http://127.0.0.1:7000/public/static/images/dot.png',
-			iconSize:     [10, 10], // size of the icon
-			shadowSize:   [50, 64], // size of the shadow
-			iconAnchor:   [12, 14], // point of the icon which will correspond to marker's location
-			shadowAnchor: [4, 62],  // the same for the shadow
-	    	popupAnchor:  [0, -15] // point from which the popup should open relative to the iconAnchor
-		});
-
-	  	var pointsData = res['data'];
-
+	  	pointsData = res['data'];
 	  	// display total in view
 	  	$('#total').html('Total pixels with cloud: '+pointsData.length);
-
 	 	for (let i = 0; i < pointsData.length; i++) {
-	    	L.marker([
-	      		pointsData[i][1],
-	      		pointsData[i][2]
-		    ], {
-	        	icon: radarIcon
-	      	});
-	      	// }).bindPopup(customPopup(pointsData[i]),customOptions).addTo(clients);
 		   	if(pointsData[i][1] != null && pointsData[i][1] != null) {
 		    	circle = L.circle([pointsData[i][1],pointsData[i][2]], {
 				    stroke: false,
@@ -55,12 +61,31 @@ function displayData() {
 				    fillColor: '#ff0033',
 				    fillOpacity: 0.4,
 				    radius: 1000,
-				 }).addTo(map);
+				 }).addTo(allCircles);
 	    	}
 		}
+		map.addLayer(allCircles);
 	});
-
-	map.addLayer(clients);
-	let bounds = [[-25,-40], [-25,-70]];
-	map.fitBounds(bounds);
 }
+
+// Date format
+function dateFromDay(year, day){
+	const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+	var date = new Date(year, 0);
+	var fullDate = new Date(date.setDate(day));
+	var day = fullDate.getDate();
+	var month = fullDate.getMonth() + 1;
+	var year = fullDate.getYear();
+	// return day +"/"+ month;
+	return monthNames[month - 1]+" "+day;
+}
+
+// Refresh button action on click
+$("#refreshButton").click(function() {
+	var currentvalue = $('#sliderValueFieldJulian').val();
+	console.log(currentvalue);
+	// call displayData with new vars
+	map.removeLayer(allCircles);
+	displayData(currentvalue);
+
+});
