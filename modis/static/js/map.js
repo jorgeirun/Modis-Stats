@@ -86,6 +86,7 @@ $("#refreshButton").click(function() {
 	console.log(currentvalue);
 	// call displayData with new vars
 	map.removeLayer(allCircles);
+	allCircles = new L.featureGroup();
 	displayData(currentvalue);
 
 });
