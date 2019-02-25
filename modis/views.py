@@ -6,22 +6,39 @@ import psycopg2
 from psycopg2 import Error
 import json
 
+user = "postgres"
+password = "postgres"
+dbname = "modis"
+
 def index(request):
-	return HttpResponse("index")
+	return render(request, 'modis/index.html')
+
+def getDataChart1(request):
+	connection = psycopg2.connect(user = user, password = password, host = "127.0.0.1", port = "5432", dbname = dbname)
+	query =  "SELECT month_name, SUM(percentage)/count(percentage) AS average FROM stats_day GROUP BY month_name"
+	cursor = connection.cursor()
+	cursor.execute(query)
+	data = cursor.fetchall();
+	connection.commit()
+
+	# context = {'data': data}
+	# return render(request, 'modis/index.html', context)
+	return JsonResponse({'data': data})
+
+def getDataChart2(request):
+	connection = psycopg2.connect(user = user, password = password, host = "127.0.0.1", port = "5432", dbname = dbname)
+	query =  "SELECT * FROM stats_day order by datenumber asc"
+	cursor = connection.cursor()
+	cursor.execute(query)
+	data = cursor.fetchall();
+	connection.commit()
+
+	return JsonResponse({'data': data})
 
 def map(request):
-	data = "map"
-	context = {'data': data}
-	return render(request, 'modis/index.html', context)
+	return render(request, 'modis/map.html')
 
 def getData(request):
-
-	user = "postgres"
-	password = "postgres"
-	dbname = "modis"
-
-	# sample URL with datenumber and limit as params
-	# http://127.0.0.1:7000/modis/getData?datenumber=5&limit=5
 
 	limit = request.GET.get('limit', '1')
 	datenumber = request.GET.get('datenumber', '1')

@@ -6,25 +6,157 @@
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
 	    <title>Modis Stats</title>
-	    <link rel="stylesheet" href="{% static 'css/leaflet.css' %}" data-require="leaflet@0.7.3" data-semver="0.7.3" />
-	    <link rel="stylesheet" href="{% static 'css/rangeslider.css' %}"/>
 	    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
-	    <link rel="stylesheet" href="{% static 'css/styles.css' %}"/>
+	    <link rel="stylesheet" href="{% static 'css/index-styles.css' %}"/>
 	</head>
 	<body>
-		<div id="map"></div>
-		<div id="panel">
-			<span id="total"></span>
-			<div id="controls">
-				<input type="range" min="1" max="365" step="1" value="1">
-				<input type="text" id="sliderValueField" name="sliderValueField" disabled>
-				<input type="hidden" id="sliderValueFieldJulian" name="sliderValueFieldJulian" disabled>
-				<button id="refreshButton" >Actualizar</button>
-			</div>
+		<div id="notas">
+			El mapa de Paraguay se divide en 402.435 puntos (pixeles)<br/>
+			Durante el año 2017, 88,06 % del territorio estuvo cubierto por nubes en promedio.<br/>
+		</div>
+		<div id="monthaveragechart">
+			<span>Filtrado por mes (total: 88%):</span>
+			<canvas id="myChart1"1 width="400" height="200"></canvas>
+			<span>Filtrado por dia:</span>
+			<canvas id="myChart2" width="800" height="400"></canvas>
 		</div>
 	</body>
 	<script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/rangeslider.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/leaflet.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/map.js' %}"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.js"></script>
+	<script type="text/javascript">
+		getDataForChart1();
+		function getDataForChart1() {
+			let url = 'http://127.0.0.1:7000/modis/getDataChart1'
+
+			$.getJSON(url,function (res) {
+			  	result = res['data'];
+			  	var months = [];
+			  	var values = [];
+			  	// display total in view
+			 	for (let i = 0; i < result.length; i++) {
+			 		months.push(result[i][0]);
+			 		values.push(result[i][1]);
+				}
+				initChar1(months, values);
+			});
+		}
+
+		function initChar1(monthNames, values){
+			var ctx = document.getElementById("myChart1").getContext('2d');
+			var myChart = new Chart(ctx, {
+			    type: 'bar',
+			    data: {
+			        labels: [
+				        monthNames[6],
+				        monthNames[2],
+				        monthNames[0],
+				        monthNames[1],
+				        monthNames[10],
+				        monthNames[8],
+				        monthNames[4],
+				        monthNames[5],
+				        monthNames[11],
+				        monthNames[9],
+				        monthNames[7],
+				        monthNames[3],
+			        ],
+			        datasets: [{
+			            label: 'Porcentaje de nubes en el año por mes',
+			            data: [
+				            parseFloat(values[6]).toFixed(2),
+					        parseFloat(values[2]).toFixed(2),
+					        parseFloat(values[0]).toFixed(2),
+					        parseFloat(values[1]).toFixed(2),
+					        parseFloat(values[10]).toFixed(2),
+					        parseFloat(values[8]).toFixed(2),
+					        parseFloat(values[4]).toFixed(2),
+					        parseFloat(values[5]).toFixed(2),
+					        parseFloat(values[11]).toFixed(2),
+					        parseFloat(values[9]).toFixed(2),
+					        parseFloat(values[7]).toFixed(2),
+					        parseFloat(values[3]).toFixed(2),
+			            ],
+			            backgroundColor: [
+			                'rgba(255, 99, 132, 0.2)',
+			                'rgba(54, 162, 235, 0.2)',
+			                'rgba(255, 206, 86, 0.2)',
+			                'rgba(75, 192, 192, 0.2)',
+			                'rgba(153, 102, 255, 0.2)',
+			                'rgba(255, 159, 64, 0.2)',
+			                'rgba(255, 99, 132, 0.2)',
+			                'rgba(54, 162, 235, 0.2)',
+			                'rgba(255, 206, 86, 0.2)',
+			                'rgba(75, 192, 192, 0.2)',
+			                'rgba(153, 102, 255, 0.2)',
+			                'rgba(255, 159, 64, 0.2)'
+			            ],
+			            borderColor: [
+			                'rgba(255,99,132,1)',
+			                'rgba(54, 162, 235, 1)',
+			                'rgba(255, 206, 86, 1)',
+			                'rgba(75, 192, 192, 1)',
+			                'rgba(153, 102, 255, 1)',
+			                'rgba(255, 159, 64, 1)',
+			                'rgba(255,99,132,1)',
+			                'rgba(54, 162, 235, 1)',
+			                'rgba(255, 206, 86, 1)',
+			                'rgba(75, 192, 192, 1)',
+			                'rgba(153, 102, 255, 1)',
+			                'rgba(255, 159, 64, 1)'
+			            ],
+			            borderWidth: 1
+			        }]
+			    },
+			    options: {
+			        scales: {
+			            yAxes: [{
+			                ticks: {
+			                    beginAtZero:true
+			                }
+			            }]
+			        }
+			    }
+			});
+		}
+
+		getDataForChart2();
+		function getDataForChart2() {
+			let url = 'http://127.0.0.1:7000/modis/getDataChart2'
+
+			$.getJSON(url,function (res) {
+			  	result = res['data'];
+			  	var days = [];
+			  	var values = [];
+			  	// display total in view
+			  	for (let i = 0; i < result.length; i++) {
+			 		days.push(result[i][0]);
+			 		values.push(result[i][1]);
+				}
+				initChar2(days, values);
+			});
+		}
+
+		function initChar2(days, values){
+			var ctx = document.getElementById("myChart2");
+			new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: days,
+					datasets: [{ 
+					    data: values,
+					    label: "per day",
+					    borderColor: "#3e95cd",
+					    fill: false
+					  }
+					]
+				},
+				options: {
+					title: {
+				  		display: true,
+				  		text: 'Total puntos in PY: 402.435. Cubiertos por nube por día:'
+					}
+				}
+			});
+		}
+	</script>
 </html>

@@ -83,7 +83,7 @@ function dateFromDay(year, day){
 // Refresh button action on click
 $("#refreshButton").click(function() {
 	var currentvalue = $('#sliderValueFieldJulian').val();
-	console.log(currentvalue);
+	console.log("Day of Year: "+currentvalue);
 	// call displayData with new vars
 	map.removeLayer(allCircles);
 	allCircles = new L.featureGroup();
