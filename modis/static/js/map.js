@@ -34,7 +34,7 @@ function displayMap() {
 
 	// display data with Jan, 2 as default
 	// set defualt values
-	var defaultVal = 2;
+	var defaultVal = 1;
 	$('input[type="range"]').val(defaultVal).change();
 	$('#sliderValueField').val(dateFromDay(2017, defaultVal));
 	$('#sliderValueFieldJulian').val(defaultVal);
@@ -57,10 +57,10 @@ function displayData(datenumber, limit = 5000000) {
 				    stroke: false,
 				    color: '#000',
 				    weight: 2,
-				    opacity: 0.5,
+				    opacity: 0.1,
 				    fillColor: '#ff0033',
-				    fillOpacity: 0.4,
-				    radius: 1000,
+				    fillOpacity: 0.1,
+				    radius: 500,
 				 }).addTo(allCircles);
 	    	}
 		}
@@ -83,9 +83,9 @@ function dateFromDay(year, day){
 // Refresh button action on click
 $("#refreshButton").click(function() {
 	var currentvalue = $('#sliderValueFieldJulian').val();
-	console.log("Day of Year: "+currentvalue);
+	console.log("Day of Year: " + currentvalue);
 	// call displayData with new vars
-	map.removeLayer(allCircles);
+	map.removeLayer(allCircles); // this clears the map after each request
 	allCircles = new L.featureGroup();
 	displayData(currentvalue);
 
