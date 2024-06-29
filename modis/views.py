@@ -1,10 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.http import JsonResponse
-from django.template import loader
 import psycopg2
 from psycopg2 import Error
-import json
 
 user = "postgres"
 password = "postgres"
@@ -47,6 +44,6 @@ def getData(request):
 	query =  "SELECT datenumber, latitude, longitude from modis_data_py_clouds WHERE datenumber = "+datenumber+" LIMIT "+limit
 	cursor = connection.cursor()
 	cursor.execute(query)
-	data = cursor.fetchall();
+	data = cursor.fetchall()
 	connection.commit()
 	return JsonResponse({'data':data})
