@@ -15,7 +15,7 @@ def getDataChart1(request):
 	query =  "SELECT month_name, SUM(percentage)/count(percentage) AS average FROM stats_day GROUP BY month_name"
 	cursor = connection.cursor()
 	cursor.execute(query)
-	data = cursor.fetchall();
+	data = cursor.fetchall()
 	connection.commit()
 
 	# context = {'data': data}
@@ -27,7 +27,7 @@ def getDataChart2(request):
 	query =  "SELECT * FROM stats_day order by datenumber asc"
 	cursor = connection.cursor()
 	cursor.execute(query)
-	data = cursor.fetchall();
+	data = cursor.fetchall()
 	connection.commit()
 
 	return JsonResponse({'data': data})
